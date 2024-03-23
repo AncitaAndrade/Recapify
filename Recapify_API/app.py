@@ -59,8 +59,11 @@ def login():
 
     if user:
         # Remove the password field before returning the user data
-        user.pop('password', None)
-        user.pop('_id', None)
+        # user.pop('password', None)
+        # user.pop('_id', None)
+        
+        # Convert the ObjectId to a string
+        user['_id'] = str(user['_id'])
         return jsonify({'message': 'Login successful', 'user': user}), 200
     else:
         return jsonify({'error': 'User does not exist. Please sign up.'}), 401
