@@ -56,5 +56,5 @@ def is_user_student(username):
         return jsonify({'error': 'User not found'}), 404
 
 if __name__ == '__main__':
-    application.run(debug=True)
+    application.run(host='0.0.0.0', port=8080)
                      
