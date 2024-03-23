@@ -24,7 +24,6 @@ def register():
 
     # Remove the password field before returning the user data
     user.pop('password', None)
-
     return jsonify({'message': 'User registered successfully'}), 201
 
 @app.route('/users/<username>', methods=['GET'])
@@ -68,4 +67,3 @@ def login():
 
 if __name__ == '__main__':
     app.run(debug=True)
-                     
