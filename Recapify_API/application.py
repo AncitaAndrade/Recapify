@@ -1,9 +1,12 @@
 from flask import Flask, request, jsonify
 from pymongo import MongoClient
+import certifi
 
+application = Flask(__name__)
 application = Flask(__name__)
 
 client =MongoClient('mongodb+srv://akashku95:gomongodb@customersdata.5pnb9iq.mongodb.net/?retryWrites=true&w=majority')
+#client= MongoClient('mongodb+srv://akashku95:gomongodb@customersdata.5pnb9iq.mongodb.net/?retryWrites=true&w=majority',tlsCAFile=certifi.where())
 db = client['customersData']
 users_collection =db['users']
 
@@ -22,10 +25,9 @@ def register():
     user = {'username': username, 'password': password, 'isStudent': is_student}
     users_collection.insert_one(user)
 
-    # Remove the password field before returning the user data
-    user.pop('password', None)
     return jsonify({'message': 'User registered successfully'}), 201
 
+@application.route('/users/<username>', methods=['GET'])
 @application.route('/users/<username>', methods=['GET'])
 def get_user(username):
     user = users_collection.find_one({'username': username})
@@ -38,6 +40,7 @@ def get_user(username):
     else:
         return jsonify({'error': 'User not found'}), 404
     
+@application.route('/users/<username>/isStudent', methods=['GET'])
 @application.route('/users/<username>/isStudent', methods=['GET'])
 def is_user_student(username):
     user = users_collection.find_one({'username': username})
