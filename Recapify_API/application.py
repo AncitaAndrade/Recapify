@@ -1,13 +1,13 @@
 from flask import Flask, request, jsonify
 from pymongo import MongoClient
 
-app = Flask(__name__)
+application = Flask(__name__)
 
 client =MongoClient('mongodb+srv://akashku95:gomongodb@customersdata.5pnb9iq.mongodb.net/?retryWrites=true&w=majority')
 db = client['customersData']
 users_collection =db['users']
 
-@app.route('/register', methods=['POST'])
+@application.route('/register', methods=['POST'])
 def register():
     data = request.get_json()
     username = data.get('username')
@@ -26,7 +26,7 @@ def register():
     user.pop('password', None)
     return jsonify({'message': 'User registered successfully'}), 201
 
-@app.route('/users/<username>', methods=['GET'])
+@application.route('/users/<username>', methods=['GET'])
 def get_user(username):
     user = users_collection.find_one({'username': username})
     if user:
@@ -38,7 +38,7 @@ def get_user(username):
     else:
         return jsonify({'error': 'User not found'}), 404
     
-@app.route('/users/<username>/isStudent', methods=['GET'])
+@application.route('/users/<username>/isStudent', methods=['GET'])
 def is_user_student(username):
     user = users_collection.find_one({'username': username})
 
@@ -48,7 +48,7 @@ def is_user_student(username):
     else:
         return jsonify({'error': 'User not found'}), 404
 
-@app.route('/login', methods=['POST'])
+@application.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
     username = data.get('username')
@@ -69,4 +69,4 @@ def login():
         return jsonify({'error': 'User does not exist. Please sign up.'}), 401
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    application.run()
