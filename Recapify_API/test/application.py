@@ -9,12 +9,6 @@ client =MongoClient('mongodb+srv://akashku95:gomongodb@customersdata.5pnb9iq.mon
 db = client['customersData']
 users_collection =db['users']
 
-try:
-    client.admin.command("ping")
-    print("Tesss")
-except Exception as e:
-    print("eerr")
-    print(e)
 
 @application.route('/register', methods=['POST'])
 def register():
