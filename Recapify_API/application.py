@@ -3,18 +3,12 @@ from pymongo import MongoClient
 import certifi
 
 application = Flask(__name__)
+application = Flask(__name__)
 
 client =MongoClient('mongodb+srv://akashku95:gomongodb@customersdata.5pnb9iq.mongodb.net/?retryWrites=true&w=majority')
 #client= MongoClient('mongodb+srv://akashku95:gomongodb@customersdata.5pnb9iq.mongodb.net/?retryWrites=true&w=majority',tlsCAFile=certifi.where())
 db = client['customersData']
 users_collection =db['users']
-
-try:
-    client.admin.command("ping")
-    print("Tesss")
-except Exception as e:
-    print("eerr")
-    print(e)
 
 @application.route('/register', methods=['POST'])
 def register():
@@ -34,6 +28,7 @@ def register():
     return jsonify({'message': 'User registered successfully'}), 201
 
 @application.route('/users/<username>', methods=['GET'])
+@application.route('/users/<username>', methods=['GET'])
 def get_user(username):
     user = users_collection.find_one({'username': username})
     if user:
@@ -46,6 +41,7 @@ def get_user(username):
         return jsonify({'error': 'User not found'}), 404
     
 @application.route('/users/<username>/isStudent', methods=['GET'])
+@application.route('/users/<username>/isStudent', methods=['GET'])
 def is_user_student(username):
     user = users_collection.find_one({'username': username})
 
@@ -55,6 +51,25 @@ def is_user_student(username):
     else:
         return jsonify({'error': 'User not found'}), 404
 
+@application.route('/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    username = data.get('username')
+    password = data.get('password')
+
+    # Check if the username and password are valid
+    user = users_collection.find_one({'username': username, 'password': password})
+
+    if user:
+        # Remove the password field before returning the user data
+        # user.pop('password', None)
+        # user.pop('_id', None)
+        
+        # Convert the ObjectId to a string
+        user['_id'] = str(user['_id'])
+        return jsonify({'message': 'Login successful', 'user': user}), 200
+    else:
+        return jsonify({'error': 'User does not exist. Please sign up.'}), 401
+
 if __name__ == '__main__':
     application.run()
-                     
