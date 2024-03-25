@@ -1,14 +1,19 @@
 from flask import Flask, request, jsonify
-from pymongo import MongoClient
-import certifi
+import dbClient
+import json
+import storage
+import Model.SummaryFile
 
 application = Flask(__name__)
-application = Flask(__name__)
 
-client =MongoClient('mongodb+srv://akashku95:gomongodb@customersdata.5pnb9iq.mongodb.net/?retryWrites=true&w=majority')
-#client= MongoClient('mongodb+srv://akashku95:gomongodb@customersdata.5pnb9iq.mongodb.net/?retryWrites=true&w=majority',tlsCAFile=certifi.where())
+client = dbClient.client
 db = client['customersData']
 users_collection =db['users']
+
+with open('config.json', 'r') as f:
+    config = json.load(f)
+access_key_id = config['aws_access_key_id']
+secret_access_key = config['aws_secret_access_key']
 
 @application.route('/register', methods=['POST'])
 def register():
@@ -28,7 +33,6 @@ def register():
     return jsonify({'message': 'User registered successfully'}), 201
 
 @application.route('/users/<username>', methods=['GET'])
-@application.route('/users/<username>', methods=['GET'])
 def get_user(username):
     user = users_collection.find_one({'username': username})
     if user:
@@ -40,7 +44,6 @@ def get_user(username):
     else:
         return jsonify({'error': 'User not found'}), 404
     
-@application.route('/users/<username>/isStudent', methods=['GET'])
 @application.route('/users/<username>/isStudent', methods=['GET'])
 def is_user_student(username):
     user = users_collection.find_one({'username': username})
@@ -70,6 +73,30 @@ def login():
         return jsonify({'message': 'Login successful', 'user': user}), 200
     else:
         return jsonify({'error': 'User does not exist. Please sign up.'}), 401
+    
+@application.route('/allRecaps/<customerId>', methods=['GET'])
+def getAllRecapsForTheCustomer(customerId):
+    return storage.getAllRecapsForCustomer(customerId)
+
+@application.route('/save_summary', methods=['POST'])
+def save_summary():
+    # Extract data from the request
+    data = request.get_json()
+    customer_id = data.get('customerId')
+    summary_heading = data.get('summaryHeading')
+    summary_filename = data.get('summaryFilename')
+
+    # Validate input data
+    if not customer_id or not summary_heading or not summary_filename:
+        return jsonify({'error': 'Invalid input data'}), 400
+
+    # Create a SummaryFile object
+    summary_file = Model.SummaryFile.SummaryFile(summary_heading, summary_filename)
+
+    # Save user summary to MongoDB
+    storage.save_user_summary(customer_id, summary_file)
+
+    return jsonify({'message': 'User summary saved successfully'}), 200
 
 if __name__ == '__main__':
     application.run()

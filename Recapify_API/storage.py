@@ -1,11 +1,47 @@
 import boto3
+from dbClient import client
+import Model.SummaryFile
 
 AWS_S3_BUCKET_NAME = 'summary-files'
 AWS_REGION = 'us-east-2'
 
-
 LOCAL_FILE = '/Users/ancitaandrade/Downloads/sample3.txt'
 NAME_FOR_S3 = 'test_file.txt'
+
+db = client['customersData']
+summaryCollection = db['SummariesCollection']
+
+def getAllRecapsForCustomer(customerId):
+    customer_recaps = summaryCollection.find_one({'CustomerId': customerId})
+    recaps = []
+    if customer_recaps and 'Summaries' in customer_recaps:
+            for summary in customer_recaps['Summaries']:
+                recaps.append({
+                    'heading': summary['Heading'],
+                    'filename': summary['FileName']
+                })
+
+    return recaps
+
+def save_user_summary(customer_id, summary_file):
+    # Check if the document already exists for the customerId
+    existing_data = summaryCollection.find_one({'CustomerId': customer_id})
+
+    if existing_data is not None:
+        # Document exists, update it by appending the new summaryFile
+        summaryCollection.update_one(
+            {'CustomerId': customer_id},
+            {'$push': {'Summaries': {'Heading': summary_file.Heading, 'FileName': summary_file.FileName}}},
+            upsert=True
+        )
+    else:
+        # Document doesn't exist, insert new document
+        data = {
+            'CustomerId': customer_id,
+            'Summaries': [{'Heading': summary_file.Heading, 'FileName': summary_file.FileName}]
+        }
+        summaryCollection.insert_one(data)
+
 
 def upload_file_to_s3():
     s3_client = boto3.client(
