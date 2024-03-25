@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import './Signup.css';
 
-function SignupModal({ onClose }) {
+function Signup({ onClose }) {
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -65,10 +65,10 @@ function SignupModal({ onClose }) {
           />
           <button type="submit">Signup</button>
         </form>
-        <p>Already have an account? <span onClick={onClose}>Login</span></p>
+        <p>Already have an account? <span onClick={onClose}><a href='./login'>Login</a></span></p>
       </div>
     </div>
   );
 }
 
-export default SignupModal;
+export default Signup;

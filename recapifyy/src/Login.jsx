@@ -18,13 +18,14 @@ function Login() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    //logic
+    //logic // fetch api
     console.log(formData);
     
     setFormData({
       username: '',
       password: ''
     });
+    
   };
 
   return (
@@ -49,7 +50,7 @@ function Login() {
         />
         <button type="submit">Login</button>
       </form>
-      <p>Don't have an account? <span>Signup</span></p>
+      <p>Don't have an account? <span><a href="./signup">Signup</a></span></p>
     </div>
   );
 }
