@@ -31,14 +31,7 @@ function Signup({ onClose }) {
         <span className="close" onClick={onClose}>&times;</span>
         <h2>Signup</h2>
         <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            name="username"
-            placeholder="Username"
-            value={formData.username}
-            onChange={handleChange}
-            required
-          />
+          
           <input
             type="email"
             name="email"
@@ -63,6 +56,28 @@ function Signup({ onClose }) {
             onChange={handleChange}
             required
           />
+          <div>
+            <label>
+              <input
+                type="radio"
+                name="isStudent"
+                value={true}
+                checked={formData.isStudent}
+                onChange={handleChange}
+              />
+              Yes, I am a student
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="isStudent"
+                value={false}
+                checked={!formData.isStudent}
+                onChange={handleChange}
+              />
+              No, I am not a student
+            </label>
+          </div>
           <button type="submit">Signup</button>
         </form>
         <p>Already have an account? <span onClick={onClose}><a href='./login'>Login</a></span></p>
