@@ -1,16 +1,19 @@
 from flask import Flask, request, jsonify
 from pymongo import MongoClient
 import certifi
+import speech
 
 application = Flask(__name__)
-application = Flask(__name__)
 
-client =MongoClient('mongodb+srv://akashku95:gomongodb@customersdata.5pnb9iq.mongodb.net/?retryWrites=true&w=majority')
-#client= MongoClient('mongodb+srv://akashku95:gomongodb@customersdata.5pnb9iq.mongodb.net/?retryWrites=true&w=majority',tlsCAFile=certifi.where())
-db = client['customersData']
-users_collection =db['users']
+client = MongoClient(
+    "mongodb+srv://akashku95:gomongodb@customersdata.5pnb9iq.mongodb.net/?retryWrites=true&w=majority"
+)
+# client= MongoClient('mongodb+srv://akashku95:gomongodb@customersdata.5pnb9iq.mongodb.net/?retryWrites=true&w=majority',tlsCAFile=certifi.where())
+db = client["customersData"]
+users_collection = db["users"]
 
-@application.route('/register', methods=['POST'])
+
+@application.route("/register", methods=["POST"])
 def register():
     data = request.get_json()
     username = data.get("username")
@@ -25,10 +28,10 @@ def register():
     user = {"username": username, "password": password, "isStudent": is_student}
     users_collection.insert_one(user)
 
-    return jsonify({'message': 'User registered successfully'}), 201
+    return jsonify({"message": "User registered successfully"}), 201
 
-@application.route('/users/<username>', methods=['GET'])
-@application.route('/users/<username>', methods=['GET'])
+
+@application.route("/users/<username>", methods=["GET"])
 def get_user(username):
     user = users_collection.find_one({"username": username})
     if user:
@@ -38,10 +41,10 @@ def get_user(username):
 
         return jsonify(user), 200
     else:
-        return jsonify({'error': 'User not found'}), 404
-    
-@application.route('/users/<username>/isStudent', methods=['GET'])
-@application.route('/users/<username>/isStudent', methods=['GET'])
+        return jsonify({"error": "User not found"}), 404
+
+
+@application.route("/users/<username>/isStudent", methods=["GET"])
 def is_user_student(username):
     user = users_collection.find_one({"username": username})
 
@@ -51,7 +54,8 @@ def is_user_student(username):
     else:
         return jsonify({"error": "User not found"}), 404
 
-@application.route('/login', methods=['POST'])
+
+@application.route("/login", methods=["POST"])
 def login():
     data = request.get_json()
     username = data.get("username")
@@ -65,5 +69,18 @@ def login():
         # user.pop('password', None)
         # user.pop('_id', None)
 
-if __name__ == '__main__':
+        # Convert the ObjectId to a string
+        user["_id"] = str(user["_id"])
+        return jsonify({"message": "Login successful", "user": user}), 200
+    else:
+        return jsonify({"error": "User does not exist. Please sign up."}), 401
+
+
+@application.route("/summarize", methods=["GET"])
+def invoke_speechmatics():
+    summ_txt = speech.s_client()
+    return jsonify({"message": "Summary generated", "Summary": summ_txt}), 200
+
+
+if __name__ == "__main__":
     application.run()
