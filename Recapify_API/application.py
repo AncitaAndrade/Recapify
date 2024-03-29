@@ -1,8 +1,9 @@
 from flask import Flask, request, jsonify
 from pymongo import MongoClient
+import TxtSummary
+import Utility.FileHelper as FileHelper
 import certifi
 
-application = Flask(__name__)
 application = Flask(__name__)
 
 client =MongoClient('mongodb+srv://akashku95:gomongodb@customersdata.5pnb9iq.mongodb.net/?retryWrites=true&w=majority')
@@ -28,7 +29,6 @@ def register():
     return jsonify({'message': 'User registered successfully'}), 201
 
 @application.route('/users/<username>', methods=['GET'])
-@application.route('/users/<username>', methods=['GET'])
 def get_user(username):
     user = users_collection.find_one({'username': username})
     if user:
@@ -40,7 +40,6 @@ def get_user(username):
     else:
         return jsonify({'error': 'User not found'}), 404
     
-@application.route('/users/<username>/isStudent', methods=['GET'])
 @application.route('/users/<username>/isStudent', methods=['GET'])
 def is_user_student(username):
     user = users_collection.find_one({'username': username})
@@ -70,6 +69,29 @@ def login():
         return jsonify({'message': 'Login successful', 'user': user}), 200
     else:
         return jsonify({'error': 'User does not exist. Please sign up.'}), 401
+    
+
+@application.route('/summarize', methods=['POST'])
+def upload_file():
+    if request.method == 'POST':
+        print(request.files)
+        # Check if a file was uploaded
+        if 'file' not in request.files:
+            return jsonify({'error': 'No file provided'})
+       
+        file = request.files['file']
+        print(file)
+        # Check if the file is empty
+        if file.filename == '':
+            return jsonify({'No file Provided'})
+        
+        if not FileHelper.allowed_file(file.filename):
+            # Invoke Speechmatics API
+            return jsonify({'Result'})
+
+        summaries = TxtSummary.getTextFileSummary(file)
+        
+        return jsonify(summaries)
 
 if __name__ == '__main__':
     application.run()
