@@ -3,6 +3,9 @@ import dbClient
 import json
 import storage
 import Model.SummaryFile
+from pymongo import MongoClient
+import TxtSummary
+import Utility.FileHelper as FileHelper
 
 application = Flask(__name__)
 
@@ -98,5 +101,28 @@ def save_summary():
 
     return jsonify({'message': 'User summary saved successfully'}), 200
 
+@application.route('/summarize', methods=['POST'])
+def upload_file():
+    if request.method == 'POST':
+        print(request.files)
+        # Check if a file was uploaded
+        if 'file' not in request.files:
+            return jsonify({'error': 'No file provided'})
+       
+        file = request.files['file']
+        print(file)
+        # Check if the file is empty
+        if file.filename == '':
+            return jsonify({'No file Provided'})
+        
+        if not FileHelper.allowed_file(file.filename):
+            # Invoke Speechmatics API
+            return jsonify({'Result'})
+
+        summaries = TxtSummary.getTextFileSummary(file)
+        
+        return jsonify(summaries)
+
 if __name__ == '__main__':
     application.run()
+
