@@ -1,5 +1,6 @@
 // Login.js
 import React, { useState } from 'react';
+import axios from 'axios'; 
 import './Login.css';
 
 function Login() {
@@ -16,18 +17,29 @@ function Login() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     //logic // fetch api
-    console.log(formData);
-    
-    setFormData({
-      username: '',
-      password: ''
-    });
-    
-  };
 
+    try {
+      // Make API call to login endpoint
+      const response = await axios.post('https://recapifyapidev-env.eba-3cwbyj7e.us-east-2.elasticbeanstalk.com/', formData);
+      
+      // Assuming the API returns some data upon successful login
+      
+      // Reset the form
+      setFormData({
+        username: '',
+        password: ''
+      });
+      
+      // Redirect the user or perform any other necessary actions upon successful login
+    } catch (error) {
+      // Handle login errors
+      console.error('Error logging in:', error);
+    }
+  };
+    
   return (
     <div className="login-container">
       <h2>Login</h2>

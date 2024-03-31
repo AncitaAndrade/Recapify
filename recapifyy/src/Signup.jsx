@@ -1,5 +1,6 @@
 // SignupModal.js
 import React, { useState } from 'react';
+import axios from 'axios'; 
 import './Signup.css';
 
 function Signup({ onClose }) {
@@ -7,22 +8,47 @@ function Signup({ onClose }) {
     username: '',
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    isStudent: true // default value is true
   });
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value , type, checked } = e.target;
     setFormData({
       ...formData,
-      [name]: value
+      [name]: type === 'checkbox'? checked : value 
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     //logic
-    console.log(formData);
-    onClose(); // Close the modal after submitting
+
+    try {
+      //  API call to signup 
+      const response = await axios.post('https://recapifyapidev-env.eba-3cwbyj7e.us-east-2.elasticbeanstalk.com/', formData);
+      
+      // Assuming the API returns some data upon successful signup
+      
+      // Reset the form
+      setFormData({
+        username: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+        isStudent: true
+      });
+      
+      // Close the modal after successful signup
+      onClose();
+      
+      // Redirect the user or perform any other necessary actions upon successful signup
+    } catch (error) {
+      // Handle signup errors
+      console.error('Error signing up:', error);
+    }
+
+    
   };
 
   return (
