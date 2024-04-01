@@ -1,6 +1,6 @@
 {
   "name": "recapifyy",
-  "proxy":"https://recapifyapidev-env.eba-3cwbyj7e.us-east-2.elasticbeanstalk.com/",
+  "proxy": "https://recapifyapidev-env.eba-3cwbyj7e.us-east-2.elasticbeanstalk.com/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

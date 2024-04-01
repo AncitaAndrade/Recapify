@@ -17,7 +17,6 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    //logic // fetch api
 
     try {
       // Make API call to login endpoint
@@ -29,21 +28,26 @@ function Login() {
         body: JSON.stringify(formData)
       });
 
-      console.log(response)
-      
-      // Reset the form
-      setFormData({
-        username: '',
-        password: ''
-      });
-      
-      // Redirect the user or perform any other necessary actions upon successful login
+      // Assuming the API returns some data upon successful login
+      if (response.ok) {
+        // Reset the form
+        setFormData({
+          username: '',
+          password: ''
+        });
+        
+        // Redirect the user to the homepage upon successful login using window.location.href
+        window.location.href = '/'; // Replace '/' with the actual URL of your homepage
+      } else {
+        // Handle login errors
+        console.error('Error logging in:', response.statusText);
+      }
     } catch (error) {
-      // Handle login errors
+      // Handle other login errors
       console.error('Error logging in:', error);
     }
   };
-    
+
   return (
     <div className="login-container">
       <h2>Login</h2>
