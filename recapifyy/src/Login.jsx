@@ -1,6 +1,4 @@
-// Login.js
 import React, { useState } from 'react';
-import axios from 'axios'; 
 import './Login.css';
 
 function Login() {
@@ -23,9 +21,15 @@ function Login() {
 
     try {
       // Make API call to login endpoint
-      const response = await axios.post('https://recapifyapidev-env.eba-3cwbyj7e.us-east-2.elasticbeanstalk.com/', formData);
-      
-      // Assuming the API returns some data upon successful login
+      const response = await fetch('http://recapifyapidev-env.eba-3cwbyj7e.us-east-2.elasticbeanstalk.com/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      });
+
+      console.log(response)
       
       // Reset the form
       setFormData({
