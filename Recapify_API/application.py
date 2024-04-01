@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from pymongo import MongoClient
 import TxtSummary
 import Utility.FileHelper as FileHelper
+from flask_cors import CORS
 import certifi
 
 application = Flask(__name__)
@@ -10,6 +11,12 @@ client =MongoClient('mongodb+srv://akashku95:gomongodb@customersdata.5pnb9iq.mon
 #client= MongoClient('mongodb+srv://akashku95:gomongodb@customersdata.5pnb9iq.mongodb.net/?retryWrites=true&w=majority',tlsCAFile=certifi.where())
 db = client['customersData']
 users_collection =db['users']
+
+CORS(application)
+
+@application.route('/', methods=['GET'])
+def sample():
+    return jsonify("Hello World")
 
 @application.route('/register', methods=['POST'])
 def register():
