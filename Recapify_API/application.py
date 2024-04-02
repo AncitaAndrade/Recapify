@@ -1,5 +1,8 @@
 from flask import Flask, request, jsonify
 from pymongo import MongoClient
+import TxtSummary
+import Utility.FileHelper as FileHelper
+from flask_cors import CORS
 import certifi
 import speech
 
@@ -11,6 +14,13 @@ client = MongoClient(
 # client= MongoClient('mongodb+srv://akashku95:gomongodb@customersdata.5pnb9iq.mongodb.net/?retryWrites=true&w=majority',tlsCAFile=certifi.where())
 db = client["customersData"]
 users_collection = db["users"]
+
+CORS(application)
+
+
+@application.route("/", methods=["GET"])
+def sample():
+    return jsonify("Hello World")
 
 
 @application.route("/register", methods=["POST"])
@@ -76,10 +86,33 @@ def login():
         return jsonify({"error": "User does not exist. Please sign up."}), 401
 
 
-@application.route("/summarize", methods=["GET"])
-def invoke_speechmatics():
-    summ_txt = speech.s_client()
-    return jsonify({"message": "Summary generated", "Summary": summ_txt}), 200
+@application.route("/summarize", methods=["POST"])
+def upload_file():
+    if request.method == "POST":
+        print(request.files)
+        # Check if a file was uploaded
+        # if 'file' not in request.files:
+        #  return jsonify({'error': 'No file provided'})
+        if "file" not in request.files and "vfile" not in request.form:
+            return jsonify({"Error": "No file or file path provided!!"})
+
+        file = request.files["file"]
+        # print(file)
+        # Check if the file is empty
+        # if file.filename == '':
+        # return jsonify({'No file Provided'})
+        if file.filename == "" and request.form["vfile"] == "":
+            return jsonify({"Error": "No file or file path Provided!!"})
+
+        if not FileHelper.allowed_file(file.filename):
+            # Invoke Speechmatics API
+            summ = speech.s_client(request.form["vfile"])
+            return jsonify(summ)
+        # return jsonify({'Result'})
+
+        summaries = TxtSummary.getTextFileSummary(file)
+
+        return jsonify(summaries)
 
 
 if __name__ == "__main__":

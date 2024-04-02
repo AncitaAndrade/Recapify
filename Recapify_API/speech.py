@@ -2,8 +2,8 @@ from speechmatics.models import ConnectionSettings
 from speechmatics.batch_client import BatchClient
 from httpx import HTTPStatusError
 
-API_KEY = "CdrUadniiMaCCm8QzOKULKHBr4sXW9ZV"
-PATH_TO_FILE = "C:\MyProject\sample.mp4"
+API_KEY = "YPdday5LTMb7RmGVCtAaYS0vnwpESpb5"
+# PATH_TO_FILE = "C:\MyProject\sample1.mp4"
 LANGUAGE = "en"
 
 settings = ConnectionSettings(
@@ -20,11 +20,11 @@ conf = {
 
 
 # Open the client using a context manager
-def s_client():
+def s_client(vfile):
     with BatchClient(settings) as client:
         try:
             job_id = client.submit_job(
-                audio=PATH_TO_FILE,
+                audio=vfile,
                 transcription_config=conf,
             )
             print(f"job {job_id} submitted successfully, waiting for transcript")
