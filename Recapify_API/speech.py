@@ -2,8 +2,7 @@ from speechmatics.models import ConnectionSettings
 from speechmatics.batch_client import BatchClient
 from httpx import HTTPStatusError
 
-API_KEY = "YPdday5LTMb7RmGVCtAaYS0vnwpESpb5"
-# PATH_TO_FILE = "C:\MyProject\sample1.mp4"
+API_KEY = "HsodVclnSt7HLLkC1mqEcxknbKxIL5o6"
 LANGUAGE = "en"
 
 settings = ConnectionSettings(
@@ -19,7 +18,6 @@ conf = {
 }
 
 
-# Open the client using a context manager
 def s_client(vfile):
     with BatchClient(settings) as client:
         try:
@@ -29,14 +27,10 @@ def s_client(vfile):
             )
             print(f"job {job_id} submitted successfully, waiting for transcript")
 
-            # Note that in production, you should set up notifications instead of polling.
-            # Notifications are described here: https://docs.speechmatics.com/features-other/notifications
-            # transcript = s_client.wait_for_completion(job_id, transcription_format="txt")
             transcript = client.wait_for_completion(
                 job_id, transcription_format="json-v2"
             )
             summary = transcript["summary"]["content"]
-            # To see the full output, try setting transcription_format='json-v2'.
             # print(transcript)
             # print(summary)
             return summary
