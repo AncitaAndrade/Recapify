@@ -6,6 +6,7 @@ function Login() {
     username: '',
     password: ''
   });
+  const [error, setError] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -19,8 +20,7 @@ function Login() {
     e.preventDefault();
 
     try {
-      // Make API call to login endpoint
-      const response = await fetch('http://recapifyapidev-env.eba-3cwbyj7e.us-east-2.elasticbeanstalk.com/login', {
+      const response = await fetch('https://recapifyapidev-env.eba-3cwbyj7e.us-east-2.elasticbeanstalk.com/', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -28,23 +28,18 @@ function Login() {
         body: JSON.stringify(formData)
       });
 
-      // Assuming the API returns some data upon successful login
       if (response.ok) {
-        // Reset the form
         setFormData({
           username: '',
           password: ''
         });
-        
-        // Redirect the user to the homepage upon successful login using window.location.href
-        window.location.href = '/'; // Replace '/' with the actual URL of your homepage
+        window.location.href = '/'; // Redirect to homepage upon successful login
       } else {
-        // Handle login errors
-        console.error('Error logging in:', response.statusText);
+        setError('Invalid username or password');
       }
     } catch (error) {
-      // Handle other login errors
       console.error('Error logging in:', error);
+      setError('An error occurred while logging in');
     }
   };
 
@@ -69,6 +64,7 @@ function Login() {
           required
         />
         <button type="submit">Login</button>
+        {error && <p className="error-message">{error}</p>}
       </form>
       <p>Don't have an account? <span><a href="./signup">Signup</a></span></p>
     </div>

@@ -24,16 +24,16 @@ function Signup({ onClose }) {
     e.preventDefault();
 
     try {
-      // Make API call to signup endpoint
+      // Mock API call to signup endpoint
       const signupResponse = await axios.post('https://recapifyapidev-env.eba-3cwbyj7e.us-east-2.elasticbeanstalk.com/', formData);
 
       // Assuming the API returns some data upon successful signup
       const userId = signupResponse.data.userId;
 
-      // Call another API endpoint to indicate user presence
+      // Mock API call to indicate user presence
       await axios.post('https://recapifyapidev-env.eba-3cwbyj7e.us-east-2.elasticbeanstalk.com/', { userId });
 
-      // Additional API call to push customer data to the backend
+      // Additional mock API call to push customer data to the backend
       await axios.post('https://recapifyapidev-env.eba-3cwbyj7e.us-east-2.elasticbeanstalk.com/', formData);
 
       // Reset the form
@@ -120,4 +120,6 @@ function Signup({ onClose }) {
 }
 
 export default Signup;
+
+
 
