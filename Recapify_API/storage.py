@@ -1,12 +1,9 @@
 import boto3
 from dbClient import client
-import Model.SummaryFile
+from application import application
 
 AWS_S3_BUCKET_NAME = 'summary-files'
 AWS_REGION = 'us-east-2'
-
-LOCAL_FILE = '/Users/ancitaandrade/Downloads/sample3.txt'
-NAME_FOR_S3 = 'test_file.txt'
 
 db = client['customersData']
 summaryCollection = db['SummariesCollection']
@@ -24,18 +21,14 @@ def getAllRecapsForCustomer(customerId):
     return recaps
 
 def save_user_summary(customer_id, summary_file):
-    # Check if the document already exists for the customerId
     existing_data = summaryCollection.find_one({'CustomerId': customer_id})
-
     if existing_data is not None:
-        # Document exists, update it by appending the new summaryFile
         summaryCollection.update_one(
             {'CustomerId': customer_id},
             {'$push': {'Summaries': {'Heading': summary_file.Heading, 'FileName': summary_file.FileName}}},
             upsert=True
         )
     else:
-        # Document doesn't exist, insert new document
         data = {
             'CustomerId': customer_id,
             'Summaries': [{'Heading': summary_file.Heading, 'FileName': summary_file.FileName}]
@@ -43,26 +36,26 @@ def save_user_summary(customer_id, summary_file):
         summaryCollection.insert_one(data)
 
 
-def upload_file_to_s3():
+def upload_file_to_s3(file, fileName):
     s3_client = boto3.client(
         service_name='s3',
         region_name=AWS_REGION,
-        aws_access_key_id="Key",
-        aws_secret_access_key="Key"
+        aws_access_key_id = application.config['AWS_ACCESS_KEY_ID'],
+        aws_secret_access_key = application.config['AWS_SECRET_ACCESS_KEY']
     )
     
-    response = s3_client.upload_file(LOCAL_FILE, AWS_S3_BUCKET_NAME, NAME_FOR_S3)
+    response = s3_client.upload_file(file, AWS_S3_BUCKET_NAME, fileName)
 
     print(f'upload_log_to_aws response: {response}')
+    return response
 
 def read_file_from_s3(bucket_name, file_name):
     s3 = boto3.client(
         service_name='s3',
-        region_name=AWS_REGION,
-        aws_access_key_id="Key",
-        aws_secret_access_key="KEY"
+        region_name = AWS_REGION,
+        aws_access_key_id = application.config['AWS_ACCESS_KEY_ID'],
+        aws_secret_access_key = application.config['AWS_SECRET_ACCESS_KEY']
     )
     obj = s3.get_object(Bucket=bucket_name, Key=file_name)
     data = obj['Body'].read()
-    print(data)
     return data
