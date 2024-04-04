@@ -7,7 +7,9 @@ from pymongo import MongoClient
 import TxtSummary
 import Utility.FileHelper as FileHelper
 from flask_cors import CORS
+import certifi
 import speech
+import tempfile
 
 application = Flask(__name__)
 
@@ -21,6 +23,7 @@ application.config['AWS_ACCESS_KEY_ID'] = config['aws_access_key_id']
 application.config['AWS_SECRET_ACCESS_KEY'] = config['aws_secret_access_key']
 
 CORS(application)
+
 
 @application.route("/", methods=["GET"])
 def sample():
@@ -49,7 +52,6 @@ def register():
 def get_user(username):
     user = users_collection.find_one({"username": username})
     if user:
-        # Remove the password field before returning the user data
         user.pop("password", None)
         user.pop("_id", None)
 
@@ -79,11 +81,6 @@ def login():
     user = users_collection.find_one({"username": username, "password": password})
 
     if user:
-        # Remove the password field before returning the user data
-        # user.pop('password', None)
-        # user.pop('_id', None)
-        
-        # Convert the ObjectId to a string
         user['_id'] = str(user['_id'])
         return jsonify({'message': 'Login successful', 'user': user}), 200
     else:
@@ -119,25 +116,24 @@ def save_summary():
 def upload_file():
     if request.method == "POST":
         print(request.files)
-        # Check if a file was uploaded
-        # if 'file' not in request.files:
-        #  return jsonify({'error': 'No file provided'})
-        if "file" not in request.files and "vfile" not in request.form:
-            return jsonify({"Error": "No file or file path provided!!"})
+
+        if "file" not in request.files:
+            return jsonify({"error": "No file provided"})
 
         file = request.files["file"]
-        # print(file)
-        # Check if the file is empty
-        # if file.filename == '':
-        # return jsonify({'No file Provided'})
-        if file.filename == "" and request.form["vfile"] == "":
-            return jsonify({"Error": "No file or file path Provided!!"})
+        print(file)
+
+        if file.filename == "":
+            return jsonify({"error": "No file Provided"})
 
         if not FileHelper.allowed_file(file.filename):
-            # Invoke Speechmatics API
-            summ = speech.s_client(request.form["vfile"])
+
+            temp_file = tempfile.NamedTemporaryFile(delete=False)
+            file.save(temp_file.name)
+            summ = speech.s_client(temp_file.name)
+            temp_file.close()
+
             return jsonify(summ)
-        # return jsonify({'Result'})
 
         summaries = TxtSummary.getTextFileSummary(file)
 
