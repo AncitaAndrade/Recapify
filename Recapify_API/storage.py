@@ -49,13 +49,13 @@ def upload_file_to_s3(file, fileName):
     print(f'upload_log_to_aws response: {response}')
     return response
 
-def read_file_from_s3(bucket_name, file_name):
+def read_file_from_s3(file_name):
     s3 = boto3.client(
         service_name='s3',
         region_name = AWS_REGION,
         aws_access_key_id = application.config['AWS_ACCESS_KEY_ID'],
         aws_secret_access_key = application.config['AWS_SECRET_ACCESS_KEY']
     )
-    obj = s3.get_object(Bucket=bucket_name, Key=file_name)
+    obj = s3.get_object(Bucket=AWS_S3_BUCKET_NAME, Key=file_name)
     data = obj['Body'].read()
     return data

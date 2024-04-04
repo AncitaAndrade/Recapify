@@ -3,11 +3,9 @@ import dbClient
 import json
 import storage
 import Model.SummaryFile
-from pymongo import MongoClient
 import TxtSummary
 import Utility.FileHelper as FileHelper
 from flask_cors import CORS
-import certifi
 import speech
 import tempfile
 
@@ -105,23 +103,33 @@ def save_summary():
     summary_file = Model.SummaryFile.SummaryFile(summary_heading, customer_id+"_"+summary_filename)
 
     temp_file_path = FileHelper.write_content_to_temp_file(summary_content)
-    response = storage.upload_file_to_s3(temp_file_path,customer_id+"_"+summary_filename)
+    response = storage.upload_file_to_s3(temp_file_path,customer_id+"_"+summary_filename+".txt")
 
     # Save user summary to MongoDB
     storage.save_user_summary(customer_id, summary_file)
 
     return jsonify({'message': 'User summary saved successfully'}), 200
 
+@application.route("/getSummary", methods=["GET"])
+def getSummaryFileFromS3():
+    data = request.get_json()
+    customer_id = data.get('customerId')
+    summary_fileName = data.get('summaryFilename')
+
+    s3FileName = customer_id+"_"+summary_fileName+".txt"
+
+    fileContent = storage.read_file_from_s3(s3FileName)
+    decoded_string = fileContent.decode("utf-8")
+    return jsonify(decoded_string)
+
 @application.route("/summarize", methods=["POST"])
 def upload_file():
     if request.method == "POST":
-        print(request.files)
 
         if "file" not in request.files:
             return jsonify({"error": "No file provided"})
 
         file = request.files["file"]
-        print(file)
 
         if file.filename == "":
             return jsonify({"error": "No file Provided"})
