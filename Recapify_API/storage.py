@@ -1,6 +1,5 @@
 import boto3
 from dbClient import client
-from application import application
 
 AWS_S3_BUCKET_NAME = 'summary-files'
 AWS_REGION = 'us-east-2'
@@ -37,6 +36,7 @@ def save_user_summary(customer_id, summary_file):
 
 
 def upload_file_to_s3(file, fileName):
+    from application import application
     s3_client = boto3.client(
         service_name='s3',
         region_name=AWS_REGION,
@@ -50,6 +50,7 @@ def upload_file_to_s3(file, fileName):
     return response
 
 def read_file_from_s3(file_name):
+    from application import application
     s3 = boto3.client(
         service_name='s3',
         region_name = AWS_REGION,
