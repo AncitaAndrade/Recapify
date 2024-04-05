@@ -1,20 +1,24 @@
 from flask import Flask, request, jsonify
-from pymongo import MongoClient
+import dbClient
+import json
+import storage
+import Model.SummaryFile
 import TxtSummary
 import Utility.FileHelper as FileHelper
 from flask_cors import CORS
-import certifi
 import speech
 import tempfile
 
 application = Flask(__name__)
 
-client = MongoClient(
-    "mongodb+srv://akashku95:gomongodb@customersdata.5pnb9iq.mongodb.net/?retryWrites=true&w=majority"
-)
-# client= MongoClient('mongodb+srv://akashku95:gomongodb@customersdata.5pnb9iq.mongodb.net/?retryWrites=true&w=majority',tlsCAFile=certifi.where())
-db = client["customersData"]
-users_collection = db["users"]
+client = dbClient.client
+db = client['customersData']
+users_collection =db['users']
+
+with open('config.json', 'r') as f:
+    config = json.load(f)
+application.config['AWS_ACCESS_KEY_ID'] = config['aws_access_key_id']
+application.config['AWS_SECRET_ACCESS_KEY'] = config['aws_secret_access_key']
 
 CORS(application)
 
@@ -46,7 +50,6 @@ def register():
 def get_user(username):
     user = users_collection.find_one({"username": username})
     if user:
-
         user.pop("password", None)
         user.pop("_id", None)
 
@@ -72,26 +75,61 @@ def login():
     username = data.get("username")
     password = data.get("password")
 
+    # Check if the username and password are valid
     user = users_collection.find_one({"username": username, "password": password})
 
     if user:
-
-        user["_id"] = str(user["_id"])
-        return jsonify({"message": "Login successful", "user": user}), 200
+        user['_id'] = str(user['_id'])
+        return jsonify({'message': 'Login successful', 'user': user}), 200
     else:
-        return jsonify({"error": "User does not exist. Please sign up."}), 401
+        return jsonify({'error': 'User does not exist. Please sign up.'}), 401
+    
+@application.route('/allRecaps/<customerId>', methods=['GET'])
+def getAllRecapsForTheCustomer(customerId):
+    return storage.getAllRecapsForCustomer(customerId)
 
+@application.route('/save_summary', methods=['POST'])
+def save_summary():
+    # Extract data from the request
+    data = request.get_json()
+    customer_id = data.get('customerId')
+    summary_heading = data.get('summaryHeading')
+    summary_content = data.get('summary')
+    summary_filename = data.get('summaryFilename')
+
+    if not customer_id or not summary_heading or not summary_filename:
+        return jsonify({'error': 'Invalid input data'}), 400
+
+    summary_file = Model.SummaryFile.SummaryFile(summary_heading, customer_id+"_"+summary_filename)
+
+    temp_file_path = FileHelper.write_content_to_temp_file(summary_content)
+    response = storage.upload_file_to_s3(temp_file_path,customer_id+"_"+summary_filename+".txt")
+
+    # Save user summary to MongoDB
+    storage.save_user_summary(customer_id, summary_file)
+
+    return jsonify({'message': 'User summary saved successfully'}), 200
+
+@application.route("/getSummary", methods=["GET"])
+def getSummaryFileFromS3():
+    data = request.get_json()
+    customer_id = data.get('customerId')
+    summary_fileName = data.get('summaryFilename')
+
+    s3FileName = customer_id+"_"+summary_fileName+".txt"
+
+    fileContent = storage.read_file_from_s3(s3FileName)
+    decoded_string = fileContent.decode("utf-8")
+    return jsonify(decoded_string)
 
 @application.route("/summarize", methods=["POST"])
 def upload_file():
     if request.method == "POST":
-        print(request.files)
 
         if "file" not in request.files:
             return jsonify({"error": "No file provided"})
 
         file = request.files["file"]
-        print(file)
 
         if file.filename == "":
             return jsonify({"error": "No file Provided"})
