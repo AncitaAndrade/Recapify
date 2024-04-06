@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import './Login.css';
+import logo from './logo.png';  
 
 function Login() {
   const [formData, setFormData] = useState({
@@ -20,20 +21,21 @@ function Login() {
     e.preventDefault();
 
     try {
-      const response = await fetch('https://recapifyapidev-env.eba-3cwbyj7e.us-east-2.elasticbeanstalk.com/', {
+      const response = await fetch('http://recapifyapidev-env.eba-3cwbyj7e.us-east-2.elasticbeanstalk.com/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData)
       });
-
+      console.log(response)
+      console.log(response.data)
       if (response.ok) {
-        setFormData({
-          username: '',
-          password: ''
-        });
-        window.location.href = '/'; // Redirect to homepage upon successful login
+        // setFormData({
+        //   username: '',
+        //   password: ''
+        // });
+        //window.location.href = '/';
       } else {
         setError('Invalid username or password');
       }
@@ -45,6 +47,7 @@ function Login() {
 
   return (
     <div className="login-container">
+      <img src={logo} alt="recapifyy\src\logo.png" className="logo" />
       <h2>Login</h2>
       <form onSubmit={handleSubmit}>
         <input
@@ -72,3 +75,4 @@ function Login() {
 }
 
 export default Login;
+

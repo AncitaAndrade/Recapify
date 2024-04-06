@@ -6,6 +6,12 @@
     border-radius: 5px;
     background-color: #f9f9f9;
   }
+
+  .login-container .logo {
+    max-width: 100%; 
+    margin-bottom: 20px; 
+  }
+  
   
   .login-container h2 {
     text-align: center;

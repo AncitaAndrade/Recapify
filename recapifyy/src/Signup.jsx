@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import logo from './logo.png';
 import './Signup.css';
 
 function Signup({ onClose }) {
   const [formData, setFormData] = useState({
     username: '',
-    email: '',
+    
     password: '',
     confirmPassword: '',
     isStudent: true
@@ -13,10 +13,10 @@ function Signup({ onClose }) {
   const [signupSuccess, setSignupSuccess] = useState(false);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
+    const { name, value , type , checked } = e.target;
     setFormData({
       ...formData,
-      [name]: value
+      [name]: type === 'checkbox ' ? checked : value
     });
   };
 
@@ -24,36 +24,37 @@ function Signup({ onClose }) {
     e.preventDefault();
 
     try {
-      // Mock API call to signup endpoint
-      const signupResponse = await axios.post('https://recapifyapidev-env.eba-3cwbyj7e.us-east-2.elasticbeanstalk.com/', formData);
+     
+      const response = await fetch('http://recapifyapidev-env.eba-3cwbyj7e.us-east-2.elasticbeanstalk.com/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData)
+      });
 
-      // Assuming the API returns some data upon successful signup
-      const userId = signupResponse.data.userId;
+      if (response.ok) {
+        const responseData = await response.json();
+        const userId = responseData.userId;
 
-      // Mock API call to indicate user presence
-      await axios.post('https://recapifyapidev-env.eba-3cwbyj7e.us-east-2.elasticbeanstalk.com/', { userId });
-
-      // Additional mock API call to push customer data to the backend
-      await axios.post('https://recapifyapidev-env.eba-3cwbyj7e.us-east-2.elasticbeanstalk.com/', formData);
-
-      // Reset the form
+     
       setFormData({
         username: '',
-        email: '',
+        
         password: '',
         confirmPassword: '',
         isStudent: true
       });
 
-      // Set signup success state to true
+      
       setSignupSuccess(true);
-
-      // Close the modal after successful signup
       onClose();
-
-      // Redirect the user or perform any other necessary actions upon successful signup
+    } else {
+      console.error('Signup failed:', response.statusText);
+    }
+      
     } catch (error) {
-      // Handle signup errors
+     
       console.error('Error signing up:', error);
     }
   };
@@ -62,23 +63,17 @@ function Signup({ onClose }) {
     <div className="modal">
       <div className="modal-content">
         <span className="close" onClick={onClose}>&times;</span>
+        <img src={logo} alt="recapifyy\src\logo.png" className="logo" />
         <h2>Signup</h2>
         {signupSuccess ? (
           <p className="success-message">Signup successful! Thank you for joining us.</p>
         ) : (
           <form onSubmit={handleSubmit}>
+            
             <input
-              type="text"
+              type="username"
               name="username"
-              placeholder="Username"
-              value={formData.username}
-              onChange={handleChange}
-              required
-            />
-            <input
-              type="email"
-              name="email"
-              placeholder="Email"
+              placeholder="username"
               value={formData.email}
               onChange={handleChange}
               required
@@ -99,16 +94,17 @@ function Signup({ onClose }) {
               onChange={handleChange}
               required
             />
-            <div>
-              <label>
+            
+            <div className="checkbox-container">
+            <label htmlFor="isStudent">Are you a student?</label>
                 <input
                   type="checkbox"
                   name="isStudent"
                   checked={formData.isStudent}
                   onChange={handleChange}
                 />
-                Yes, I am a student
-              </label>
+                 
+              
             </div>
             <button type="submit">Signup</button>
           </form>
