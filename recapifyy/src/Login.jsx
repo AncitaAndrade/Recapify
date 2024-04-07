@@ -35,6 +35,7 @@ function Login() {
         const data = await response.json();
         console.log(data.user)
         localStorage.setItem('customerId', data.user._id);
+        localStorage.setItem('username', data.user.username)
         navigate('/');
       } else {
         setError('Invalid username or password');
