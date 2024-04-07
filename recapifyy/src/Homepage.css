@@ -1,0 +1,70 @@
+/* Homepage.css */
+.homepage-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    background-color: #333;
+    color: #fff;
+  }
+  
+  .navbar-brand {
+    font-size: 24px;
+  }
+  
+  .user-details {
+    font-size: 16px;
+  }
+  
+  .content {
+    display: flex;
+    margin-top: 20px;
+  }
+  
+  .saved-work-section {
+    flex-basis: 50%;
+    padding-right: 20px;
+  }
+  
+  .file-upload-section {
+    flex-basis: 50%;
+    padding-left: 20px;
+  }
+  
+  .file-upload-container {
+    margin-bottom: 20px;
+  }
+  
+  .file-input {
+    margin-right: 10px;
+  }
+  
+  .upload-button {
+    background-color: #007bff;
+    color: #fff;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .saved-work-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .saved-work-item {
+    margin-bottom: 10px;
+    background-color: #f4f4f4;
+    padding: 10px;
+    border-radius: 4px;
+  }
+  
+  /* Add more styles as needed */
+  
