@@ -25,7 +25,7 @@ function Signup({ onClose }) {
 
     try {
      
-      const response = await fetch('http://recapifyapidev-env.eba-3cwbyj7e.us-east-2.elasticbeanstalk.com/signup', {
+      const response = await fetch('http://recapifyapidev-env.eba-3cwbyj7e.us-east-2.elasticbeanstalk.com/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
