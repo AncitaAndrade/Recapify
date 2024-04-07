@@ -1,10 +1,17 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react';
 
+function Home() {
+  const [user, setCustomerId] = useState(null);
 
-const Home = () => {
-  return(
-
-    <div>Home</div>
+  useEffect(() => {
+    const user = localStorage.getItem("customerId");
+    if(user){
+      setCustomerId(user);
+    }
+  })
+  return (
+  <div>{user}</div>
   )
 }
-export default  Home
+
+export default Home;

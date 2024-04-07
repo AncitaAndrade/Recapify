@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import './Login.css';
 import logo from './logo.png';  
+import { useNavigate } from "react-router-dom";
 
 function Login() {
+  const [customerId, setUser] = useState('');
+  const navigate= useNavigate();
   const [formData, setFormData] = useState({
     username: '',
     password: ''
@@ -28,14 +31,11 @@ function Login() {
         },
         body: JSON.stringify(formData)
       });
-      console.log(response)
-      console.log(response.data)
       if (response.ok) {
-        // setFormData({
-        //   username: '',
-        //   password: ''
-        // });
-        //window.location.href = '/';
+        const data = await response.json();
+        console.log(data.user)
+        localStorage.setItem('customerId', data.user._id);
+        navigate('/');
       } else {
         setError('Invalid username or password');
       }

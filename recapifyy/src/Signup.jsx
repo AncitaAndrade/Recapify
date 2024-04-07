@@ -5,7 +5,6 @@ import './Signup.css';
 function Signup({ onClose }) {
   const [formData, setFormData] = useState({
     username: '',
-    
     password: '',
     confirmPassword: '',
     isStudent: false
