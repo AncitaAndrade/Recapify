@@ -1,7 +1,7 @@
 // Homepage.js
 import React from 'react';
 import FileUpload from './FileUpload';
-import SavedWork from 'recapifyy\src\SavedWork.jsx';
+import SavedWork from './SavedWork';
 import './Homepage.css';
 
 function Homepage() {
