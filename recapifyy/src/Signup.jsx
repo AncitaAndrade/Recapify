@@ -8,7 +8,7 @@ function Signup({ onClose }) {
     
     password: '',
     confirmPassword: '',
-    isStudent: true
+    isStudent: false
   });
   const [signupSuccess, setSignupSuccess] = useState(false);
 
@@ -16,7 +16,7 @@ function Signup({ onClose }) {
     const { name, value , type , checked } = e.target;
     setFormData({
       ...formData,
-      [name]: type === 'checkbox ' ? checked : value
+      [name]: type === 'checkbox' ? checked : value
     });
   };
 
@@ -25,7 +25,7 @@ function Signup({ onClose }) {
 
     try {
      
-      const response = await fetch('http://recapifyapidev-env.eba-3cwbyj7e.us-east-2.elasticbeanstalk.com/signup', {
+      const response = await fetch('http://recapifyapidev-env.eba-3cwbyj7e.us-east-2.elasticbeanstalk.com/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -104,7 +104,6 @@ function Signup({ onClose }) {
                   onChange={handleChange}
                 />
                  
-              
             </div>
             <button type="submit">Signup</button>
           </form>
