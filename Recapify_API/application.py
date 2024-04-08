@@ -7,6 +7,7 @@ import TxtSummary
 import Utility.FileHelper as FileHelper
 from flask_cors import CORS
 import speech
+import secrets
 import tempfile
 
 application = Flask(__name__)
@@ -95,31 +96,29 @@ def save_summary():
     customer_id = data.get('customerId')
     summary_heading = data.get('summaryHeading')
     summary_content = data.get('summary')
-    summary_filename = data.get('summaryFilename')
 
-    if not customer_id or not summary_heading or not summary_filename:
+    if not customer_id or not summary_heading:
         return jsonify({'error': 'Invalid input data'}), 400
+    
+    random_filename = secrets.token_urlsafe(8) + ".txt" 
 
-    summary_file = Model.SummaryFile.SummaryFile(summary_heading, customer_id+"_"+summary_filename)
+    summary_file = Model.SummaryFile.SummaryFile(summary_heading, customer_id+"_"+random_filename)
 
     temp_file_path = FileHelper.write_content_to_temp_file(summary_content)
-    response = storage.upload_file_to_s3(temp_file_path,customer_id+"_"+summary_filename+".txt")
+    response = storage.upload_file_to_s3(temp_file_path,customer_id+"_"+random_filename)
 
     # Save user summary to MongoDB
     storage.save_user_summary(customer_id, summary_file)
 
     return jsonify({'message': 'User summary saved successfully'}), 200
 
-@application.route("/getSummary", methods=["GET"])
-def getSummaryFileFromS3():
-    data = request.get_json()
-    customer_id = data.get('customerId')
-    summary_fileName = data.get('summaryFilename')
-
-    s3FileName = customer_id+"_"+summary_fileName+".txt"
-
-    fileContent = storage.read_file_from_s3(s3FileName)
-    decoded_string = fileContent.decode("utf-8")
+@application.route("/getSummary/<summary_fileName>", methods=["GET"])
+def getSummaryFileFromS3(summary_fileName):
+    print(summary_fileName)
+    decoded_string = ""
+    if summary_fileName and summary_fileName.strip():
+        fileContent = storage.read_file_from_s3(summary_fileName)
+        decoded_string = fileContent.decode("utf-8")
     return jsonify(decoded_string)
 
 @application.route("/summarize", methods=["POST"])

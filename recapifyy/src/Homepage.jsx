@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import FileUpload from './FileUpload';
 import SavedWork from './SavedWork';
 import './Homepage.css';
+import './SavedWork.css';
 
 function Homepage() {
   const [user, setCustomerId] = useState(null);
@@ -24,7 +25,7 @@ function Homepage() {
       </nav>
       <div className="content">
         <div className="saved-work-section">
-          <h2>Saved Work</h2>
+          <h2 className='center-heading'>All Recaps</h2>
           <SavedWork />
         </div>
         <div className="file-upload-section">
