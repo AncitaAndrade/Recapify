@@ -1,14 +1,15 @@
-import Utility.FileHelper 
+import Utility.FileHelper
 from azure.core.credentials import AzureKeyCredential
 from azure.ai.textanalytics import TextAnalyticsClient, TextDocumentInput
 
+
 def sample_abstractive_summarization(client, file_path):
     summaries = []
-    file_extension = file_path.filename.lower().split('.')[-1]
+    file_extension = file_path.filename.lower().split(".")[-1]
     # Read the content of the file based on its extension
     print(file_path)
     if file_extension == "txt":
-        document_text = file_path.read().decode('utf-8')
+        document_text = file_path.read().decode("utf-8")
     elif file_extension == "pdf":
         # Add code to extract text from PDF
         document_text = Utility.FileHelper.extract_text_from_pdf(file_path)
@@ -30,15 +31,18 @@ def sample_abstractive_summarization(client, file_path):
             for summary in result.summaries:
                 summaries.append(summary.text)  # Append the summary to the list
         elif result.is_error is True:
-            print("...Is an error with code '{}' and message '{}'".format(
-                result.error.code, result.error.message
-            ))
-    
+            print(
+                "...Is an error with code '{}' and message '{}'".format(
+                    result.error.code, result.error.message
+                )
+            )
+
     return summaries  # Return the list of summaries
 
+
 def getTextFileSummary(file):
-    endpoint = "https://recap.cognitiveservices.azure.com/"
-    key = "bb7b021856bf47e5a4a175294ee1394b"
+    endpoint = "https://recapifytextsummary.cognitiveservices.azure.com/"
+    key = "ba7b72c0e21c4b96949315c38e6d089b"
 
     # Initialize Text Analytics client
     client = TextAnalyticsClient(endpoint=endpoint, credential=AzureKeyCredential(key))
