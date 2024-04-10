@@ -24,7 +24,7 @@ function Login() {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://recapifyapidev-env.eba-3cwbyj7e.us-east-2.elasticbeanstalk.com/login', {
+      const response = await fetch('http://recapify.us-east-2.elasticbeanstalk.com/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -33,7 +33,6 @@ function Login() {
       });
       if (response.ok) {
         const data = await response.json();
-        console.log(data.user)
         localStorage.setItem('customerId', data.user._id);
         localStorage.setItem('username', data.user.username)
         navigate('/');

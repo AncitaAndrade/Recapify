@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import logo from './logo.png';
+import logo from './logo.png'
 import './Signup.css';
 
 function Signup({ onClose }) {
@@ -24,7 +24,7 @@ function Signup({ onClose }) {
 
     try {
      
-      const response = await fetch('http://recapifyapidev-env.eba-3cwbyj7e.us-east-2.elasticbeanstalk.com/register', {
+      const response = await fetch('http://recapify.us-east-2.elasticbeanstalk.com/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
