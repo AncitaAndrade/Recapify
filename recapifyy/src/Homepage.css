@@ -19,9 +19,16 @@
     font-size: 24px;
     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
   }
+
+  .logo{
+    height: 40px;
+  }
   
   .user-details {
-    font-size: 16px;
+    color: black;
+    font-size: 18px;
+    font-weight: bold;
+    align-content: end;
   }
   
   .content {
