@@ -112,6 +112,20 @@ def save_summary():
 
     return jsonify({'message': 'User summary saved successfully'}), 200
 
+@application.route('/delete/<fileName>', methods=['DELETE'])
+def delete_file_from_s3(fileName):
+    try:
+        response = storage.delete_file_from_s3(fileName)
+        parts = fileName.split('_')
+        customer_id = parts[0]
+        result = storage.remove_file(customer_id, fileName)
+        if result:
+            return jsonify({'message': 'File deleted successfully'})
+        else:
+            return jsonify({'message': 'File not deleted'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @application.route("/getSummary/<summary_fileName>", methods=["GET"])
 def getSummaryFileFromS3(summary_fileName):
     print(summary_fileName)

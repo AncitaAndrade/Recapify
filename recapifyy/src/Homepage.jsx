@@ -6,10 +6,12 @@ import './Homepage.css';
 import './SavedWork.css';
 import Login from './Login';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
+import { useNavigate } from 'react-router-dom';
 
 function Homepage() {
   const [customerId, setCustomerId] = useState(null);
   const [username, setCustomerName] = useState(null);
+  const navigate = useNavigate();
   
   useEffect(() => {
     const customerId = localStorage.getItem("customerId");
@@ -25,14 +27,17 @@ function Homepage() {
   });
 
   const handleSignOut = () => {
-    setCustomerName(null);
-    setCustomerId(null);
-    console.log(username)
+    //setCustomerName(null);
+    //setCustomerId(null);
+    //console.log(username);
+    localStorage.removeItem("customerId");
+    localStorage.removeItem("username");
+    navigate('/login');
   };
   
 
   return (
-    customerId != null?
+    customerId!=null ?
     <div className="homepage-container">
       <nav className="navbar">
         <div className="navbar-brand"><img src={logo} alt="Recapify" className='logo'/></div>
