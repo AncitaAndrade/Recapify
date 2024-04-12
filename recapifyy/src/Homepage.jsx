@@ -7,12 +7,16 @@ import './SavedWork.css';
 import Login from './Login';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { useNavigate } from 'react-router-dom';
+import Button from '@mui/material/Button';
 
 function Homepage() {
   const [customerId, setCustomerId] = useState(null);
   const [username, setCustomerName] = useState(null);
   const navigate = useNavigate();
   
+  const [generatedSummary, setGeneratedSummary] = useState('');
+  const [isSummaryGenerated, setIsSummaryGenerated] = useState(false);
+
   useEffect(() => {
     const customerId = localStorage.getItem("customerId");
     const username = localStorage.getItem("username");
@@ -24,7 +28,7 @@ function Homepage() {
       setCustomerName(username);
     }
 
-  });
+  },[]);
 
   const handleSignOut = () => {
     //setCustomerName(null);
@@ -34,7 +38,30 @@ function Homepage() {
     localStorage.removeItem("username");
     navigate('/login');
   };
-  
+  const handleUpload = ( ) => { 
+    const summary = "Generated summary text"; 
+    setGeneratedSummary(summary);
+    setIsSummaryGenerated(true);
+  };
+  const handleCopy = () => {
+    navigator.clipboard.writeText(generatedSummary)
+      .then(() => {
+        console.log('Summary copied to clipboard:', generatedSummary);
+      })
+      .catch(error => {
+        console.error('Error copying summary to clipboard:', error);
+      });
+  };
+
+  const handleSave = () => {
+    
+    console.log('Summary saved:', generatedSummary);
+  };
+
+  const handleDiscard = () => {
+    setGeneratedSummary('');
+  };
+ 
 
   return (
     customerId!=null ?
@@ -46,14 +73,30 @@ function Homepage() {
         <ExitToAppIcon />
       </div>
       </nav>
+
       <div className="content">
         <div className="saved-work-section">
           <h2 className='center-heading'>All Recaps</h2>
           <SavedWork />
         </div>
-        <div className="file-upload-section">
-          <h2>Upload Files</h2>
-          <FileUpload />
+
+
+        <div className="flex-container">
+      <div className="file-upload-section">
+          <h2> upload files</h2>
+          <FileUpload /> 
+          <div className="Summary-section">
+          <h2>Generated Summary</h2>
+          <textarea className="Summary-textbox" value={generatedSummary} readOnly />
+          <div className="button-group">
+              <Button variant="contained" color="primary" onClick={handleDiscard}>Discard</Button>
+              <Button variant="contained" color="primary" onClick={handleCopy}>Copy</Button>
+              <Button variant="contained" color="primary" onClick={handleSave}>Save</Button>
+        </div>
+        </div>
+        </div>
+
+        
         </div>
       </div>
     </div> : <Login/>
