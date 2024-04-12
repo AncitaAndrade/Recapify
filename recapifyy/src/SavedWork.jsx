@@ -3,7 +3,7 @@ import { ListItem, ListItemText, IconButton, ListItemSecondaryAction } from '@mu
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Typography } from '@mui/material';
 
-function SavedWork() {
+function SavedWork ({ generatedSummary, onGeneratedSummaryChange }) {
   const [hoveredItem, setHoveredItem] = useState(null);
   const [customerId, setCustomerId] = useState(null);
   const [recaps, setRecaps] = useState([]);
@@ -90,6 +90,7 @@ function SavedWork() {
         setPopupData(detailedData);
         setOpen(true);
         setTitle(recap.heading)
+        onGeneratedSummaryChange(detailedData); 
       })
       .catch((error) => {
         console.error('Error fetching recap details:', error);
@@ -143,7 +144,14 @@ function SavedWork() {
           </Button>
         </DialogActions>
       </Dialog>
+    
+    {generatedSummary && ( // Conditionally render the generated summary
+    <div className="generated-summary-box">
+      <h2>Generated Summary</h2>
+      <textarea className="summary-textarea" value={generatedSummary} readOnly />
     </div>
+  )}
+  </div>
   );
 }
 
