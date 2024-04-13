@@ -83,7 +83,7 @@ function Homepage() {
 
         <div className="flex-container">
       <div className="file-upload-section">
-          <h2> upload files</h2>
+          <h2> Upload files</h2>
           <FileUpload /> 
           <div className="Summary-section">
           <h2>Generated Summary</h2>
