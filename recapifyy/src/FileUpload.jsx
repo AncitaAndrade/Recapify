@@ -25,7 +25,7 @@ function FileUpload({ onSummaryGenerated }) {
         }
 
         const summary = await response.json();
-        onSummaryGenerated(summaryData.summary); 
+        onSummaryGenerated(summary); 
       } catch (error) {
         console.error('Error uploading file:', error);
       }

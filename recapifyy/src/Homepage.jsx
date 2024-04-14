@@ -43,18 +43,10 @@ function Homepage() {
     setGeneratedSummary(summary);
     setIsSummaryGenerated(true);
   };
-  const handleCopy = () => {
-    navigator.clipboard.writeText(generatedSummary)
-      .then(() => {
-        console.log('Summary copied to clipboard:', generatedSummary);
-      })
-      .catch(error => {
-        console.error('Error copying summary to clipboard:', error);
-      });
-  };
+  
 
   const handleSave = () => {
-    
+    // logic for saved to all recaps
     console.log('Summary saved:', generatedSummary);
   };
 
@@ -62,6 +54,22 @@ function Homepage() {
     setGeneratedSummary('');
   };
  
+  const handleDownload = () => {
+   
+    const blob = new Blob([generatedSummary], { type: 'text/plain' });
+    
+    const link = document.createElement('a');
+    
+    link.href = URL.createObjectURL(blob);
+    
+    link.download = 'summary.txt';
+    
+    document.body.appendChild(link);
+    
+    link.click();
+    
+    document.body.removeChild(link);
+  };
 
   return (
     customerId!=null ?
@@ -90,7 +98,7 @@ function Homepage() {
           <textarea className="Summary-textbox" value={generatedSummary} readOnly />
           <div className="button-group">
               <Button variant="contained" color="primary" onClick={handleDiscard}>Discard</Button>
-              <Button variant="contained" color="primary" onClick={handleCopy}>Copy</Button>
+              <Button variant="contained" color="primary" onClick={handleDownload}>Download</Button>
               <Button variant="contained" color="primary" onClick={handleSave}>Save</Button>
         </div>
         </div>
