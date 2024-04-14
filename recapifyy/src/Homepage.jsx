@@ -9,13 +9,17 @@ import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { useNavigate } from 'react-router-dom';
 import Button from '@mui/material/Button';
 
+const url = "http://recapify.us-east-2.elasticbeanstalk.com/";
+
 function Homepage() {
   const [customerId, setCustomerId] = useState(null);
   const [username, setCustomerName] = useState(null);
+  const [recaps, setRecaps] = useState([]);
   const navigate = useNavigate();
   
   const [generatedSummary, setGeneratedSummary] = useState('');
   const [isSummaryGenerated, setIsSummaryGenerated] = useState(false);
+  const [refresh, setRefresh] = useState(false);
   
   useEffect(() => {
     const customerId = localStorage.getItem("customerId");
@@ -31,18 +35,17 @@ function Homepage() {
   },[]);
 
   const handleSignOut = () => {
-    //setCustomerName(null);
-    //setCustomerId(null);
-    //console.log(username);
     localStorage.removeItem("customerId");
     localStorage.removeItem("username");
     navigate('/login');
   };
+
   const handleUpload = ( ) => { 
     const summary = "Generated summary text"; 
     setGeneratedSummary(summary);
     setIsSummaryGenerated(true);
   };
+
   const handleCopy = () => {
     navigator.clipboard.writeText(generatedSummary)
       .then(() => {
@@ -53,10 +56,33 @@ function Homepage() {
       });
   };
 
-  const handleSave = () => {
-    
-    console.log('Summary saved:', generatedSummary);
-  };
+  const handleSave = async () => {
+    const currentDate = new Date();
+    const defaultTitle = `${currentDate.toDateString()} Summary`;
+    const title = window.prompt('Enter the title:', defaultTitle);
+    console.log('Summary saved with title:', title, generatedSummary);
+    const requestOptions = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        customerId: customerId,
+        summaryHeading: title,
+        summary: "Test Summary"
+      })
+    };
+    try {
+      const response = await fetch(`${url}save_summary`, requestOptions);
+      if (!response.ok) {
+        throw new Error('Failed to fetch recap details. Status: ' + response.status);
+      }
+      const data = await response.json();
+      setRefresh(refresh =>!refresh);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+};
 
   const handleDiscard = () => {
     setGeneratedSummary('');
@@ -77,13 +103,13 @@ function Homepage() {
       <div className="content">
         <div className="saved-work-section">
           <h2 className='center-heading'>All Recaps</h2>
-          <SavedWork />
+          <SavedWork refresh={refresh} />
         </div>
 
 
         <div className="flex-container">
       <div className="file-upload-section">
-          <h2> Upload files</h2>
+          <h2> Upload file</h2>
           <FileUpload /> 
           <div className="Summary-section">
           <h2>Generated Summary</h2>

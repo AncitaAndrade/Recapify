@@ -3,7 +3,7 @@ import { ListItem, ListItemText, IconButton, ListItemSecondaryAction } from '@mu
 import DeleteIcon from '@mui/icons-material/Delete';
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Typography } from '@mui/material';
 
-function SavedWork ({ generatedSummary, onGeneratedSummaryChange }) {
+function SavedWork ({ generatedSummary, onGeneratedSummaryChange, refresh }) {
   const [hoveredItem, setHoveredItem] = useState(null);
   const [customerId, setCustomerId] = useState(null);
   const [recaps, setRecaps] = useState([]);
@@ -21,14 +21,20 @@ function SavedWork ({ generatedSummary, onGeneratedSummaryChange }) {
   }, []); 
 
   useEffect(() => {
+    if (refresh) {
+      fetchData();
+    }
+  }, [refresh]);
+
+  useEffect(() => {
     if (customerId) {
       fetchData();
     }
-  }, [customerId]);
+    console.log('Refresh state updated:', refresh); 
+  }, [customerId, refresh]);
 
   const fetchData = async () => {
     try {
-      console.log(customerId)
       const response = await fetch(url + '/allRecaps/'+customerId, {
         method: 'GET',
       });
@@ -50,8 +56,7 @@ function SavedWork ({ generatedSummary, onGeneratedSummaryChange }) {
 
   const handleDeleteRecap = async (recapId) => {
     try {
-      // Call API to delete the recap item
-      // Replace 'DELETE' with the actual HTTP method used for deletion in your API
+      
       const response = await fetch(`${url}/deleteRecap/${recapId}`, {
         method: 'DELETE',
       });
@@ -145,12 +150,12 @@ function SavedWork ({ generatedSummary, onGeneratedSummaryChange }) {
         </DialogActions>
       </Dialog>
     
-    {generatedSummary && ( // Conditionally render the generated summary
+    {/* {generatedSummary && ( // Conditionally render the generated summary
     <div className="generated-summary-box">
       <h2>Generated Summary</h2>
       <textarea className="summary-textarea" value={generatedSummary} readOnly />
     </div>
-  )}
+  )} */}
   </div>
   );
 }

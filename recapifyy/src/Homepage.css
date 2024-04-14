@@ -64,8 +64,6 @@
     display:flex;
   }
   
- 
-  
   .file-upload-container {
     margin-bottom: 20px;
   }
@@ -94,7 +92,6 @@
   margin-left: 175px; 
   margin-right: 175px; 
 }
-
 
   .generated-summary-box {
     display : flex;
@@ -129,4 +126,6 @@
   
   .button-group button {
     margin-left: 10px; 
+    background-color: #a56b65;
+    color: black;
   }
