@@ -15,7 +15,7 @@ function FileUpload({ onSummaryGenerated }) {
       formData.append('file', file);
 
       try {
-        const response = await fetch('http://recapify.us-east-2.elasticbeanstalk.com/save_summary', {
+        const response = await fetch('http://recapify.us-east-2.elasticbeanstalk.com/summarize', {
           method: 'POST',
           body: formData,
         });
@@ -25,7 +25,7 @@ function FileUpload({ onSummaryGenerated }) {
         }
 
         const summary = await response.json();
-        onSummaryGenerated(summary); 
+        onSummaryGenerated(summaryData.summary); 
       } catch (error) {
         console.error('Error uploading file:', error);
       }

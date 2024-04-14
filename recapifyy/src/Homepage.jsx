@@ -16,7 +16,7 @@ function Homepage() {
   
   const [generatedSummary, setGeneratedSummary] = useState('');
   const [isSummaryGenerated, setIsSummaryGenerated] = useState(false);
-  
+
   useEffect(() => {
     const customerId = localStorage.getItem("customerId");
     const username = localStorage.getItem("username");
@@ -84,7 +84,7 @@ function Homepage() {
         <div className="flex-container">
       <div className="file-upload-section">
           <h2> Upload files</h2>
-          <FileUpload /> 
+          <FileUpload  onSummaryGenerated={setGeneratedSummary} /> 
           <div className="Summary-section">
           <h2>Generated Summary</h2>
           <textarea className="Summary-textbox" value={generatedSummary} readOnly />
