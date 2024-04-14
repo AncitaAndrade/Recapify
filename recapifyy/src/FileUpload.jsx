@@ -1,11 +1,43 @@
-// FileUpload.js
-import React from 'react';
+// FileUpload.jsx
+import React, { useState } from 'react';
+import Button from '@mui/material/Button';
 
-function FileUpload() {
+function FileUpload({ onSummaryGenerated }) {
+  const [file, setFile] = useState(null);
+
+  const handleFileChange = (event) => {
+    setFile(event.target.files[0]);
+  };
+
+  const handleUpload = async () => {
+    if (file) {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      try {
+        const response = await fetch('http://recapify.us-east-2.elasticbeanstalk.com/save_summary', {
+          method: 'POST',
+          body: formData,
+        });
+
+        if (!response.ok) {
+          throw new Error('Failed to upload file');
+        }
+
+        const summary = await response.json();
+        onSummaryGenerated(summary); 
+      } catch (error) {
+        console.error('Error uploading file:', error);
+      }
+    }
+  };
+
   return (
-    <div className="file-upload-container">
-      <input type="file" className="file-input" />
-      <button className="upload-button">Upload</button>
+    <div>
+      <input type="file" onChange={handleFileChange} />
+      <Button variant="contained" color="primary" onClick={handleUpload}>
+        Upload
+      </Button>
     </div>
   );
 }

@@ -16,7 +16,7 @@ function Homepage() {
   
   const [generatedSummary, setGeneratedSummary] = useState('');
   const [isSummaryGenerated, setIsSummaryGenerated] = useState(false);
-
+  
   useEffect(() => {
     const customerId = localStorage.getItem("customerId");
     const username = localStorage.getItem("username");
