@@ -60,7 +60,6 @@ function Homepage() {
     const currentDate = new Date();
     const defaultTitle = `${currentDate.toDateString()} Summary`;
     const title = window.prompt('Enter the title:', defaultTitle);
-    console.log('Summary saved with title:', title, generatedSummary);
     const requestOptions = {
       method: 'POST',
       headers: {
@@ -69,7 +68,7 @@ function Homepage() {
       body: JSON.stringify({
         customerId: customerId,
         summaryHeading: title,
-        summary: "Test Summary"
+        summary: generatedSummary.toString()
       })
     };
     try {
@@ -88,6 +87,22 @@ function Homepage() {
     setGeneratedSummary('');
   };
  
+  const handleDownload = () => {
+   
+    const blob = new Blob([generatedSummary], { type: 'text/plain' });
+    
+    const link = document.createElement('a');
+    
+    link.href = URL.createObjectURL(blob);
+    
+    link.download = 'summary.txt';
+    
+    document.body.appendChild(link);
+    
+    link.click();
+    
+    document.body.removeChild(link);
+  };
 
   return (
     customerId!=null ?
@@ -110,13 +125,13 @@ function Homepage() {
         <div className="flex-container">
       <div className="file-upload-section">
           <h2> Upload file</h2>
-          <FileUpload /> 
+          <FileUpload  onSummaryGenerated={setGeneratedSummary} /> 
           <div className="Summary-section">
           <h2>Generated Summary</h2>
           <textarea className="Summary-textbox" value={generatedSummary} readOnly />
           <div className="button-group">
               <Button variant="contained" color="primary" onClick={handleDiscard}>Discard</Button>
-              <Button variant="contained" color="primary" onClick={handleCopy}>Copy</Button>
+              <Button variant="contained" color="primary" onClick={handleDownload}>Download</Button>
               <Button variant="contained" color="primary" onClick={handleSave}>Save</Button>
         </div>
         </div>

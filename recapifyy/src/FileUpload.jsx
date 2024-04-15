@@ -15,7 +15,7 @@ function FileUpload({ onSummaryGenerated }) {
       formData.append('file', file);
 
       try {
-        const response = await fetch('http://recapify.us-east-2.elasticbeanstalk.com/save_summary', {
+        const response = await fetch('http://recapify.us-east-2.elasticbeanstalk.com/summarize', {
           method: 'POST',
           body: formData,
         });
