@@ -56,7 +56,7 @@ function SavedWork ({ generatedSummary, onGeneratedSummaryChange, refresh }) {
 
   const handleDeleteRecap = async (recap) => {
     try {
-      const response = await fetch(`${url}/deleteRecap/${recap.filename}`, {
+      const response = await fetch(`${url}deleteRecap/${recap.filename}`, {
         method: 'DELETE',
       });
       if (!response.ok) {
