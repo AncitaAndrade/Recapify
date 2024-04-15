@@ -54,17 +54,16 @@ function SavedWork ({ generatedSummary, onGeneratedSummaryChange, refresh }) {
     setPopupData(null);
   };
 
-  const handleDeleteRecap = async (recapId) => {
+  const handleDeleteRecap = async (recap) => {
     try {
-      
-      const response = await fetch(`${url}/deleteRecap/${recapId}`, {
+      const response = await fetch(`${url}/deleteRecap/${recap.filename}`, {
         method: 'DELETE',
       });
       if (!response.ok) {
         throw new Error('Failed to delete recap');
       }
       // Remove the deleted recap from the recaps state
-      setRecaps(recaps.filter(recap => recap.id !== recapId));
+      setRecaps(recaps.filter(r => r == recap));
     } catch (error) {
       console.error('Error deleting recap:', error);
     }
@@ -149,13 +148,6 @@ function SavedWork ({ generatedSummary, onGeneratedSummaryChange, refresh }) {
           </Button>
         </DialogActions>
       </Dialog>
-    
-    {/* {generatedSummary && ( // Conditionally render the generated summary
-    <div className="generated-summary-box">
-      <h2>Generated Summary</h2>
-      <textarea className="summary-textarea" value={generatedSummary} readOnly />
-    </div>
-  )} */}
   </div>
   );
 }
