@@ -21,7 +21,9 @@ with open('config.json', 'r') as f:
 application.config['AWS_ACCESS_KEY_ID'] = config['aws_access_key_id']
 application.config['AWS_SECRET_ACCESS_KEY'] = config['aws_secret_access_key']
 
+application.config['MAX_CONTENT_LENGTH'] = 1 * 1024 * 1024 * 1024  # 1 GB
 CORS(application)
+#CORS(application, origins='http://recapify.s3-website.us-east-2.amazonaws.com')
 
 
 @application.route("/", methods=["GET"])
@@ -137,8 +139,6 @@ def getSummaryFileFromS3(summary_fileName):
 
 @application.route("/summarize", methods=["POST"])
 def upload_file():
-    if request.method == "POST":
-
         if "file" not in request.files:
             return jsonify({"error": "No file provided"})
 
