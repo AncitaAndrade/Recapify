@@ -89,7 +89,7 @@
 }
 
 .file-upload-section,
-.button-group ,.Summary-textbox
+.button-group , .Summary-textbox
 {
   
   flex-grow: 1;
@@ -129,7 +129,6 @@
     bottom: 20px;
     left: 54%; 
    transform: translateX(-50%);
-  
     display: flex;
     gap : 20px; 
   }
@@ -140,7 +139,7 @@
     color: black;
     padding: 10px 20px;
     border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease; 
+   border-radius: 5px;
+   cursor: pointer;
+   transition: background-color 0.3s ease; 
   }
