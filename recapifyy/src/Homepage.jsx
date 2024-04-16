@@ -4,7 +4,7 @@ import SavedWork from './SavedWork';
 import logo from './logo.svg';
 import './Homepage.css';
 import './SavedWork.css';
-import 'recapifyy\src\FileUpload.css';
+import './FileUpload.css';
 import Login from './Login';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { useNavigate } from 'react-router-dom';
