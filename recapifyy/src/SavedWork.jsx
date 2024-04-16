@@ -27,7 +27,7 @@ function SavedWork ({ generatedSummary, onGeneratedSummaryChange, refresh }) {
   }, [refresh]);
 
   useEffect(() => {
-    if (customerId) {
+    if (customerId!=null) {
       fetchData();
     }
     console.log('Refresh state updated:', refresh); 
@@ -56,14 +56,14 @@ function SavedWork ({ generatedSummary, onGeneratedSummaryChange, refresh }) {
 
   const handleDeleteRecap = async (recap) => {
     try {
-      const response = await fetch(`${url}deleteRecap/${recap.filename}`, {
+      const response = await fetch(`${url}/delete/${recap.filename}`, {
         method: 'DELETE',
       });
       if (!response.ok) {
         throw new Error('Failed to delete recap');
       }
-      // Remove the deleted recap from the recaps state
-      setRecaps(recaps.filter(r => r == recap));
+
+      setRecaps(recaps.filter(r => r.filename !== recap.filename));
     } catch (error) {
       console.error('Error deleting recap:', error);
     }

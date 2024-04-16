@@ -1,14 +1,20 @@
 // FileUpload.jsx
 import React, { useState } from 'react';
 import Button from '@mui/material/Button';
+import Snackbar from '@mui/material/Snackbar';
+
 
 function FileUpload({ onSummaryGenerated }) {
   const [file, setFile] = useState(null);
+  const [open, setOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState(''); 
 
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
     setErrorMessage(''); 
+  };
+  const handleClose = () => {
+    setOpen(false);
   };
 
   const handleUpload = async () => {
@@ -31,10 +37,10 @@ function FileUpload({ onSummaryGenerated }) {
           console.error('Error uploading file:', error);
         }
       } else {
-        displayErrorMessage(`Error: File '${file.name}' is not a supported file type. Allowed file types are: wav, mp3, aac, ogg, mpeg, amr, m4a, mp4, flac, pdf, docx, txt`); // Added
+        displayErrorMessage(`Error: File '${file.name}' is not a supported file type.`); 
       }
     } else {
-      displayErrorMessage('Error: No file selected'); // Added
+      displayErrorMessage('Error: No file selected');
     }
   };
 
@@ -46,24 +52,25 @@ function FileUpload({ onSummaryGenerated }) {
 
   const displayErrorMessage = (message) => { 
     setErrorMessage(message);
+    if (message) {
+      setOpen(true);
+    }
   };
 
   return (
-    <div style={{  width: '600px',
-    padding: '20px',
-    backgroundColor: '#f5f5f5',
-    border: '2px dashed #333',
-    borderRadius: '8px',
-    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-    fontFamily: 'Arial, sans-serif',
-    fontSize: '16px',
-    color: '#333',
-    textAlign: 'center'}}>
+    <div>
       <input type="file" onChange={handleFileChange} />
       <Button variant="contained" color="primary" onClick={handleUpload}>
         Upload
       </Button>
-      {errorMessage && <p>{errorMessage}</p>}
+       <Snackbar
+          anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+          open={open}
+          autoHideDuration={3000}
+          onClose={handleClose}
+          message={errorMessage }
+          key={'top' + 'center'}
+        />       
     </div>
   );
 }
