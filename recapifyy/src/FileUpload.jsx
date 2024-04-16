@@ -2,12 +2,13 @@
 import React, { useState } from 'react';
 import Button from '@mui/material/Button';
 import Snackbar from '@mui/material/Snackbar';
-
+import CircularProgress from '@mui/material/CircularProgress';
 
 function FileUpload({ onSummaryGenerated }) {
   const [file, setFile] = useState(null);
-  const [open, setOpen] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(''); 
+  const [open, setOpen] = useState(false);
 
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
@@ -23,10 +24,12 @@ function FileUpload({ onSummaryGenerated }) {
       if (isValidFileType) {
         const formData = new FormData();
         formData.append('file', file);
+        setUploading(true); 
+
         try {
           const response = await fetch('http://recapify.us-east-2.elasticbeanstalk.com/summarize', {
             method: 'POST',
-            body: formData,
+            body: formData
           });
           if (!response.ok) {
             throw new Error('Failed to upload file');
@@ -36,12 +39,17 @@ function FileUpload({ onSummaryGenerated }) {
         } catch (error) {
           console.error('Error uploading file:', error);
         }
+        finally {
+          setUploading(false); 
+        }
+
       } else {
         displayErrorMessage(`Error: File '${file.name}' is not a supported file type.`); 
       }
     } else {
       displayErrorMessage('Error: No file selected');
     }
+    
   };
 
   const checkFileType = (fileName) => {
@@ -58,7 +66,7 @@ function FileUpload({ onSummaryGenerated }) {
   };
 
   return (
-    <div>
+    <div className="file-upload-container">
       <input type="file" onChange={handleFileChange} />
       <Button variant="contained" color="primary" onClick={handleUpload}>
         Upload
@@ -71,6 +79,7 @@ function FileUpload({ onSummaryGenerated }) {
           message={errorMessage }
           key={'top' + 'center'}
         />       
+      {uploading && <CircularProgress />}
     </div>
   );
 }

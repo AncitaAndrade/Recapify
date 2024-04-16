@@ -4,6 +4,7 @@ import SavedWork from './SavedWork';
 import logo from './logo.svg';
 import './Homepage.css';
 import './SavedWork.css';
+import 'recapifyy\src\FileUpload.css';
 import Login from './Login';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { useNavigate } from 'react-router-dom';
@@ -126,9 +127,12 @@ function Homepage() {
       <div className="file-upload-section">
           <h2> Upload file</h2>
           <FileUpload  onSummaryGenerated={setGeneratedSummary} /> 
+
           <div className="Summary-section">
           <h2>Generated Summary</h2>
-          <textarea className="Summary-textbox" value={generatedSummary} readOnly />
+          <textarea className="Summary-textbox" value={generatedSummary} onChange={(e) => setGeneratedSummary(e.target.value)} />
+          <div/>
+          <div/>
           <div className="button-group">
               <Button variant="contained" color="primary" onClick={handleDiscard}>Discard</Button>
               <Button variant="contained" color="primary" onClick={handleDownload}>Download</Button>
@@ -136,9 +140,7 @@ function Homepage() {
         </div>
         </div>
         </div>
-
-        
-        </div>
+         </div>
       </div>
     </div> : <Login/>
   );
