@@ -1,0 +1,43 @@
+
+.delete-button {
+    font-size: 12px;
+    padding: 2px 5px; 
+    border: none;
+    background-color: transparent;
+    color: #aaa;
+    cursor: pointer;
+  }
+
+  .saved-work-section {
+    height: 100vh;
+    background-color: #F9D5D5;
+    flex-basis: 30%;
+    border-radius: 5px;
+  }
+
+  .custom-button {
+    color: #a56b65;
+  }
+  
+  .delete-button:hover {
+    color: #ff0000; 
+  }
+
+  .saved-work-list{
+    padding: 20px;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+
+  .saved-work-item {
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    background-color: #a56b65;
+    padding: 10px;
+    border-radius: 4px;
+  }
+
+  

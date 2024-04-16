@@ -60,3 +60,28 @@ def read_file_from_s3(file_name):
     obj = s3.get_object(Bucket=AWS_S3_BUCKET_NAME, Key=file_name)
     data = obj['Body'].read()
     return data
+
+def delete_file_from_s3(fileName):
+    from application import application
+    s3_client = boto3.client(
+        service_name='s3',
+        region_name=AWS_REGION,
+        aws_access_key_id = application.config['AWS_ACCESS_KEY_ID'],
+        aws_secret_access_key = application.config['AWS_SECRET_ACCESS_KEY']
+    )
+
+    response = s3_client.delete_object(Bucket=AWS_S3_BUCKET_NAME, Key=fileName)
+
+    print(f'delete_file_from_s3 response: {response}')
+    return response
+
+def remove_file(customer_id, filename):
+    result = summaryCollection.update_one(
+        {"CustomerId": customer_id},
+        {"$pull": {"Summaries": {"FileName": filename}}},
+    )
+    if result.modified_count > 0:
+        return True
+    else:
+        return False
+
