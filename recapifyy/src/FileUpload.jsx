@@ -4,16 +4,16 @@ import Button from '@mui/material/Button';
 
 function FileUpload({ onSummaryGenerated }) {
   const [file, setFile] = useState(null);
-  const [errorMessage, setErrorMessage] = useState(''); // Added
+  const [errorMessage, setErrorMessage] = useState(''); 
 
   const handleFileChange = (event) => {
     setFile(event.target.files[0]);
-    setErrorMessage(''); // Added
+    setErrorMessage(''); 
   };
 
   const handleUpload = async () => {
     if (file) {
-      const isValidFileType = checkFileType(file.name); // Added
+      const isValidFileType = checkFileType(file.name); 
       if (isValidFileType) {
         const formData = new FormData();
         formData.append('file', file);
@@ -38,23 +38,32 @@ function FileUpload({ onSummaryGenerated }) {
     }
   };
 
-  const checkFileType = (fileName) => { // Moved from outside the component
+  const checkFileType = (fileName) => {
     const allowedExtensions = ["wav", "mp3", "aac", "ogg", "mpeg", "amr", "m4a", "mp4", "flac", "pdf", "docx", "txt"];
     const fileExtension = fileName.split('.').pop().toLowerCase();
     return allowedExtensions.includes(fileExtension);
   };
 
-  const displayErrorMessage = (message) => { // Added
+  const displayErrorMessage = (message) => { 
     setErrorMessage(message);
   };
 
   return (
-    <div style={{width:'600px'}}>
+    <div style={{  width: '600px',
+    padding: '20px',
+    backgroundColor: '#f5f5f5',
+    border: '2px dashed #333',
+    borderRadius: '8px',
+    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
+    fontFamily: 'Arial, sans-serif',
+    fontSize: '16px',
+    color: '#333',
+    textAlign: 'center'}}>
       <input type="file" onChange={handleFileChange} />
       <Button variant="contained" color="primary" onClick={handleUpload}>
         Upload
       </Button>
-      {errorMessage && <p>{errorMessage}</p>} {/* Added */}
+      {errorMessage && <p>{errorMessage}</p>}
     </div>
   );
 }
