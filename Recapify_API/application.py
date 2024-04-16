@@ -7,6 +7,7 @@ import TxtSummary
 import Utility.FileHelper as FileHelper
 from flask_cors import CORS
 import speech
+import secrets
 import tempfile
 
 application = Flask(__name__)
@@ -20,7 +21,9 @@ with open('config.json', 'r') as f:
 application.config['AWS_ACCESS_KEY_ID'] = config['aws_access_key_id']
 application.config['AWS_SECRET_ACCESS_KEY'] = config['aws_secret_access_key']
 
+application.config['MAX_CONTENT_LENGTH'] = 1 * 1024 * 1024 * 1024  # 1 GB
 CORS(application)
+#CORS(application, origins='http://recapify.s3-website.us-east-2.amazonaws.com')
 
 
 @application.route("/", methods=["GET"])
@@ -95,37 +98,47 @@ def save_summary():
     customer_id = data.get('customerId')
     summary_heading = data.get('summaryHeading')
     summary_content = data.get('summary')
-    summary_filename = data.get('summaryFilename')
 
-    if not customer_id or not summary_heading or not summary_filename:
+    if not customer_id or not summary_heading:
         return jsonify({'error': 'Invalid input data'}), 400
+    
+    random_filename = secrets.token_urlsafe(8) + ".txt" 
 
-    summary_file = Model.SummaryFile.SummaryFile(summary_heading, customer_id+"_"+summary_filename)
+    summary_file = Model.SummaryFile.SummaryFile(summary_heading, customer_id+"_"+random_filename)
 
     temp_file_path = FileHelper.write_content_to_temp_file(summary_content)
-    response = storage.upload_file_to_s3(temp_file_path,customer_id+"_"+summary_filename+".txt")
+    response = storage.upload_file_to_s3(temp_file_path,customer_id+"_"+random_filename)
 
     # Save user summary to MongoDB
     storage.save_user_summary(customer_id, summary_file)
 
     return jsonify({'message': 'User summary saved successfully'}), 200
 
-@application.route("/getSummary", methods=["GET"])
-def getSummaryFileFromS3():
-    data = request.get_json()
-    customer_id = data.get('customerId')
-    summary_fileName = data.get('summaryFilename')
+@application.route('/delete/<fileName>', methods=['DELETE'])
+def delete_file_from_s3(fileName):
+    try:
+        response = storage.delete_file_from_s3(fileName)
+        parts = fileName.split('_')
+        customer_id = parts[0]
+        result = storage.remove_file(customer_id, fileName)
+        if result:
+            return jsonify({'message': 'File deleted successfully'})
+        else:
+            return jsonify({'message': 'File not deleted'})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
 
-    s3FileName = customer_id+"_"+summary_fileName+".txt"
-
-    fileContent = storage.read_file_from_s3(s3FileName)
-    decoded_string = fileContent.decode("utf-8")
+@application.route("/getSummary/<summary_fileName>", methods=["GET"])
+def getSummaryFileFromS3(summary_fileName):
+    print(summary_fileName)
+    decoded_string = ""
+    if summary_fileName and summary_fileName.strip():
+        fileContent = storage.read_file_from_s3(summary_fileName)
+        decoded_string = fileContent.decode("utf-8")
     return jsonify(decoded_string)
 
 @application.route("/summarize", methods=["POST"])
 def upload_file():
-    if request.method == "POST":
-
         if "file" not in request.files:
             return jsonify({"error": "No file provided"})
 
