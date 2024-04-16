@@ -65,7 +65,11 @@
   }
   
   .file-upload-container {
-    margin-bottom: 20px;
+    width: 600px; 
+  max-width: calc(100% - 40px); 
+  margin-left: auto;
+  margin-right: auto;
+   
   }
   
   .file-input {
@@ -85,16 +89,20 @@
 }
 
 .file-upload-section,
-.button-group 
+.button-group ,.Summary-textbox
 {
+  
   flex-grow: 1;
   margin-top: 20px; 
   margin-left: 175px; 
   margin-right: 175px; 
   
+  max-width: calc(100% - 40px);
+  
 }
 
   .generated-summary-box {
+    
     display : flex;
     justify-content : center;
     align-items: center;
@@ -103,6 +111,7 @@
   }
   
   .Summary-textbox {
+    
     height: 300px;
    width: 800px;
    max-width : 600px;
@@ -117,16 +126,21 @@
   }
   .button-group {
     position: absolute;
-    bottom: 10px;
+    bottom: 20px;
     left: 54%; 
-  transform: translateX(-50%);
+   transform: translateX(-50%);
   
     display: flex;
     gap : 20px; 
   }
   
   .button-group button {
-    margin-left: 10px; 
+    
     background-color: #a56b65;
     color: black;
+    padding: 10px 20px;
+    border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease; 
   }
