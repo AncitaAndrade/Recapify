@@ -58,7 +58,8 @@ function FileUpload({ onSummaryGenerated }) {
     fontFamily: 'Arial, sans-serif',
     fontSize: '16px',
     color: '#333',
-    textAlign: 'center'}}>
+    textAlign: 'center',
+    maxWidth: '90%',}}>
       <input type="file" onChange={handleFileChange} />
       <Button variant="contained" color="primary" onClick={handleUpload}>
         Upload
