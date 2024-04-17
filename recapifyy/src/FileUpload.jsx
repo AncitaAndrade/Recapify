@@ -79,7 +79,7 @@ function FileUpload({ onSummaryGenerated }) {
           message={errorMessage }
           key={'top' + 'center'}
         />       
-      {uploading && <CircularProgress />}
+      {uploading && <CircularProgress style={{'color': '#a56b65'}}/>}
     </div>
   );
 }
