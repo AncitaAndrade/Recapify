@@ -113,7 +113,7 @@ function Homepage() {
         <div className="user-details">Welcome {username}</div>
         <div className="signout-btn" onClick={handleSignOut}>
         <ExitToAppIcon />
-      </div>
+        </div>
       </nav>
 
       <div className="content">
@@ -123,24 +123,20 @@ function Homepage() {
         </div>
 
 
-        <div className="flex-container">
-      <div className="file-upload-section">
-          <h2> Upload file</h2>
-          <FileUpload  onSummaryGenerated={setGeneratedSummary} /> 
+        <div className="file-upload-container">
+            <h2> Upload file</h2>
+            <FileUpload  onSummaryGenerated={setGeneratedSummary} /> 
 
-          <div className="Summary-section">
-          <h2>Generated Summary</h2>
-          <textarea className="Summary-textbox" value={generatedSummary} onChange={(e) => setGeneratedSummary(e.target.value)} />
-          <div/>
-          <div/>
-          <div className="button-group">
-              <Button variant="contained" color="primary" onClick={handleDiscard}>Discard</Button>
-              <Button variant="contained" color="primary" onClick={handleDownload}>Download</Button>
-              <Button variant="contained" color="primary" onClick={handleSave}>Save</Button>
+            <div className="Summary-section">
+              <h2>Generated Summary</h2>
+              <textarea className="Summary-textbox" value={generatedSummary} onChange={(e) => setGeneratedSummary(e.target.value)} />
+            </div>
+            <div className="button-group">
+                <Button variant="contained" color="primary" onClick={handleDiscard}>Discard</Button>
+                <Button variant="contained" color="primary" onClick={handleDownload}>Download</Button>
+                <Button variant="contained" color="primary" onClick={handleSave}>Save</Button>
+            </div>
         </div>
-        </div>
-        </div>
-         </div>
       </div>
     </div> : <Login/>
   );
