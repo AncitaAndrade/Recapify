@@ -9,3 +9,7 @@ For Windows
     * python -m venv venv <path>
     * .\<env-name>\Scripts\activate
     * pip install flask
+
+
+To run:
+python application.py
