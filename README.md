@@ -1,4 +1,4 @@
 # Recapify
 
-Front end is developed using ReactJS
-Backend is developed using Python Flask
+* Front end(Folder - recapifyy) is developed using ReactJS.
+* Backend(Folder - Recapify_API) is developed using Python Flask.
